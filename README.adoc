@@ -1,11 +1,13 @@
 = Build Scans Recipes Gradle Plugin
 :buildscan-version: 1.2
-:plugin-version: 0.1.0
+:plugin-version: 0.1.0-beta-2
 
 image:http://img.shields.io/travis/melix/gradle-buildscan-recipes/master.svg["Build Status (travis)", link="https://travis-ci.org/melix/gradle-buildscan-recipes"]
 image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
 
 This plugin enhances the information published in https://scans.gradle.com[Build Scans] with custom values and tags.
+
+This https://scans.gradle.com/s/2t3ffhke4k2oc[sample Build Scan] was generated using this plugin, for example.
 
 == Usage
 
