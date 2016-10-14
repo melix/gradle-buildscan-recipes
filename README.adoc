@@ -1,0 +1,68 @@
+= Build Scans Recipes Gradle Plugin
+:buildscan-version: 1.2.0
+:plugin-version: 0.1.0
+
+image:http://img.shields.io/travis/melix/gradle-buildscan-recipes/master.svg["Build Status (travis)", link="https://travis-ci.org/melix/gradle-buildscan-recipes"]
+image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+
+This plugin enhances the information published in https://scans.gradle.com[Build Scans] with custom values and tags.
+
+== Usage
+
+Build script snippet for use in all Gradle versions:
+[source,groovy]
+[subs="attributes"]
+.build.gradle
+----
+buildscript {
+  repositories {
+     maven {
+        url "https://plugins.gradle.org/m2/"
+     }
+
+  dependencies {
+     classpath "com.gradle:build-scan-plugin:{buildscan-version}"
+     classpath 'me.champeau.gradle:buildscan-recipes-plugin:{plugin-version}'
+  }
+}
+
+apply plugin: 'com.gradle.build-scan'
+apply plugin: me.champeau.gradle.buildscans.RecipesPlugin
+
+buildScan {
+   licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+   licenseAgree = 'yes'
+
+   recipes 'git-commit', 'git-status', 'teamcity'
+}
+----
+
+Build script snippet for new, incubating, plugin mechanism introduced in Gradle 2.1:
+[source,groovy]
+[subs="attributes"]
+.build.gradle
+----
+plugins {
+  id 'com.gradle.build-scan' version '{buildscan-version}'
+  id 'me.champeau.gradle.jmh' version '{plugin-version}'
+}
+----
+
+== Configuration
+
+The plugin provides a number of _recipes_ that can be used to automatically add tags and custom values to Build Scans.
+The following recipes are available:
+
+* `git-commit` : Tries to determine the Git commit ID for the build
+* `git-status` : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
+* `teamcity`   : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
+* `travis-ci`  : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
+
+== Adding recipes
+
+Recipes are written in Groovy and can be found in the `src/recipes` directory. Note that the rules are _statically compiled_ and expose 2 variables:
+
+* `buildScan`, of type `BuildScanExtension`, providing ability to tag a build scan, add a link, or add custom values
+* `gradle`, giving access to the `Gradle` instance of the build
+
+Recipes are bundled with this plugin.

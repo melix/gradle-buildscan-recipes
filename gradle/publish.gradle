@@ -1,0 +1,24 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.gradle.plugin-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/melix/gradle-buildscan-recipes'
+    vcsUrl = 'https://github.com/melix/gradle-buildscan-recipes'
+    description = 'Various recipes for Gradle Build Scans'
+    tags = ['build scans']
+
+    plugins {
+        buildScanRecipesPlugin {
+            id = 'me.champeau.buildscan-recipes'
+            displayName = 'Gradle Build Scan Recipes'
+        }
+    }
+}

@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+    }
+}
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+group = 'me.champeau.gradle'
+
+repositories {
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile 'com.gradle:build-scan-plugin:1.2'
+}
+
+processResources {
+    expand(version: version)
+}
+
+task compileRecipeClasspath {
+    ext.classpathFile = file("$buildDir/classpath.txt")
+    inputs.files(configurations.compile, compileGroovy.destinationDir)
+    outputs.file(ext.classpathFile)
+
+    doLast {
+        classpathFile.text = files(configurations.compile, compileGroovy.destinationDir).asPath
+    }
+}
+
+task compileRecipes(type: GroovyCompile) {
+    dependsOn compileGroovy, compileRecipeClasspath
+    source = files("src/recipes")
+    groovyClasspath = compileGroovy.groovyClasspath
+    classpath = files(compileGroovy.destinationDir, configurations.compile)
+    destinationDir = file("$buildDir/recipes")
+    groovyOptions.configurationScript = file('recipes-config.groovy')
+}
+
+jar {
+    dependsOn compileRecipes
+    from(compileRecipes.destinationDir)
+}
+
+apply from: 'gradle/publish.gradle'
