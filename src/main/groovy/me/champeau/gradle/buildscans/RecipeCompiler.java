@@ -18,6 +18,7 @@ package me.champeau.gradle.buildscans;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.codehaus.groovy.ast.ClassHelper;
 import org.codehaus.groovy.ast.ClassNode;
+import org.codehaus.groovy.ast.GenericsType;
 import org.codehaus.groovy.ast.MethodNode;
 import org.codehaus.groovy.ast.Parameter;
 import org.codehaus.groovy.classgen.GeneratorContext;
@@ -28,11 +29,13 @@ import org.codehaus.groovy.control.customizers.CompilationCustomizer;
 import org.gradle.api.invocation.Gradle;
 
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 public class RecipeCompiler extends CompilationCustomizer {
 
     private static final ClassNode BUILDSCAN_TYPE = ClassHelper.make(BuildScanExtension.class);
     private static final ClassNode GRADLE_TYPE = ClassHelper.make(Gradle.class);
+    private static final ClassNode MAP_TYPE = ClassHelper.make(Map.class);
 
     public RecipeCompiler() {
         super(CompilePhase.CONVERSION);
@@ -45,12 +48,18 @@ public class RecipeCompiler extends CompilationCustomizer {
         classNode.setSuperClass(ClassHelper.OBJECT_TYPE);
         MethodNode run = classNode.getMethods("run").get(0);
         classNode.getMethods().remove(run);
+        ClassNode mapType = MAP_TYPE.getPlainNodeReference();
+        mapType.setGenericsTypes(new GenericsType[] {
+            new GenericsType(ClassHelper.STRING_TYPE),
+            new GenericsType(ClassHelper.STRING_TYPE),
+        });
         MethodNode apply = new MethodNode("apply",
                 Modifier.PUBLIC,
                 ClassHelper.VOID_TYPE,
                 new Parameter[]{
                         new Parameter(GRADLE_TYPE, "gradle"),
                         new Parameter(BUILDSCAN_TYPE, "buildScan"),
+                        new Parameter(mapType, "params"),
                 },
                 ClassNode.EMPTY_ARRAY,
                 run.getCode());

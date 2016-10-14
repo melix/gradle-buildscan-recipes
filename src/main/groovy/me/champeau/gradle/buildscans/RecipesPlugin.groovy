@@ -11,8 +11,8 @@ class RecipesPlugin implements Plugin<Project> {
         // Would have loved to do it with Groovy extension module but they are not visible
         // from buildscripts even if the plugin is found on classpath
         // so we have to rely on dirty runtime metaprogramming tricks
-        extension.metaClass.recipe = { String recipeName ->
-            recipes.apply(recipeName)
+        extension.metaClass.recipe = { Map<String, String> params, String recipeName ->
+            recipes.apply(recipeName, params)
         }
         extension.metaClass.recipes = { String... recipeList ->
             recipeList.each {

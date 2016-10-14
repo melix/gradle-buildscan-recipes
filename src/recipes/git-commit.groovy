@@ -7,5 +7,7 @@ try {
 
 if (commitId) {
     buildScan.value "Git Commit ID", commitId
+    if (params.baseUrl) {
+        buildScan.link 'Sources', "${params.baseUrl}/$commitId"
+    }
 }
-

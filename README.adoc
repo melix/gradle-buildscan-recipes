@@ -60,11 +60,23 @@ The following recipes are available:
 * `teamcity`   : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
 * `travis-ci`  : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
 
+=== Recipe specific parameters
+
+The `git-commit` recipe accepts an optional `baseUrl` parameter. If specified, a link to the commit will also be created. For example:
+
+[source,groovy]
+----
+buildScan {
+    recipe 'git-commit', baseUrl: 'https://github.com/melix/gradle-buildscan-recipes/tree'
+}
+----
+
 == Adding recipes
 
 Recipes are written in Groovy and can be found in the https://github.com/melix/gradle-buildscan-recipes/tree/master/src/recipes[recipes] directory. Note that the rules are _statically compiled_ and expose 2 variables:
 
 * `buildScan`, of type `BuildScanExtension`, providing ability to tag a build scan, add a link, or add custom values
 * `gradle`, giving access to the `Gradle` instance of the build
+* `params`, a `Map<String, String>` of parameters (non-null, but maybe empty)
 
 Recipes are bundled with this plugin.

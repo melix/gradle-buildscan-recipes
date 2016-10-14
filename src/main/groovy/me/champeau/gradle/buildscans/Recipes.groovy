@@ -29,7 +29,7 @@ class Recipes {
         (Recipe) Class.forName(RecipeCompiler.recipeClassName((String)it)).newInstance()
     }
 
-    void apply(final String recipeName) {
-        recipes[recipeName].apply(gradle, buildScan)
+    void apply(final String recipeName, Map<String, String> params = [:]) {
+        recipes[recipeName].apply(gradle, buildScan, params?:Collections.<String,String>emptyMap())
     }
 }
