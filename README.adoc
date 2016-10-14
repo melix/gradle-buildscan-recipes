@@ -60,7 +60,7 @@ The following recipes are available:
 
 == Adding recipes
 
-Recipes are written in Groovy and can be found in the `src/recipes` directory. Note that the rules are _statically compiled_ and expose 2 variables:
+Recipes are written in Groovy and can be found in the https://github.com/melix/gradle-buildscan-recipes/tree/master/src/recipes[recipes] directory. Note that the rules are _statically compiled_ and expose 2 variables:
 
 * `buildScan`, of type `BuildScanExtension`, providing ability to tag a build scan, add a link, or add custom values
 * `gradle`, giving access to the `Gradle` instance of the build
