@@ -1,0 +1,20 @@
+== Writing new recipes
+
+Build Scan recipes are written using the http://groovy-lang.org/[Groovy language]. Despite appearances, all the
+files in this directory are _statically compiled_.
+
+They have 3 injected variables:
+
+* `buildScan` is an instance of `com.gradle.scan.plugin.BuildScanExtension`. This extension offers 3 methods that
+are interesting for recipes:
+** `link(String label, String url)` allows the creation of a link in the build scan.
+** `tag(String tag)` adds a tag to the build scan
+** `value(String name, String value)` adds a custom value
+* `gradle` in an instance of `org.gradle.api.invocation.Gradle`. It should be unused in most cases, but can be helpful
+if you need to add custom values, tags, ... at a different time than when the plugin is applied (for example, once
+the task graph is ready, ...)
+* `params` is an instance of `Map<String, String>` and can be used to configure the recipe.
+
+The name of the recipe is directly used in the configuration of the plugin. If you are interested in understanding how
+a recipe can be statically compiled, look at the `me.champeau.gradle.buildscans.RecipeCompiler` class, as well as
+the `compileRecipes` task in the root Gradle file.
