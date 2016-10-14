@@ -1,5 +1,5 @@
 = Build Scans Recipes Gradle Plugin
-:buildscan-version: 1.2.0
+:buildscan-version: 1.2
 :plugin-version: 0.1.0
 
 image:http://img.shields.io/travis/melix/gradle-buildscan-recipes/master.svg["Build Status (travis)", link="https://travis-ci.org/melix/gradle-buildscan-recipes"]
@@ -44,7 +44,7 @@ Build script snippet for new, incubating, plugin mechanism introduced in Gradle 
 ----
 plugins {
   id 'com.gradle.build-scan' version '{buildscan-version}'
-  id 'me.champeau.gradle.jmh' version '{plugin-version}'
+  id 'me.champeau.buildscan-recipes' version '{plugin-version}'
 }
 ----
 
