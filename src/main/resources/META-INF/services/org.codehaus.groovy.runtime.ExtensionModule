@@ -1,5 +1,5 @@
 moduleName=Build Scan extension module
-version=$version
+moduleVersion=$version
 extensionClasses=me.champeau.gradle.buildscans.BuildScanExtensionModule
 
 
