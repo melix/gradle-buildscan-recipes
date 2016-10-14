@@ -7,7 +7,9 @@ image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link
 
 This plugin enhances the information published in https://scans.gradle.com[Build Scans] with custom values and tags.
 
-This https://gradle.com/s/zbsev5qtxpybq[sample Build Scan] was generated using this plugin, for example.
+This https://gradle.com/s/zbsev5qtxpybq[sample Build Scan] was generated using this plugin, for example, on Travis CI.
+This https://scans.gradle.com/s/ovowowg7cathi[other one] was generated locally, using this plugin too: you will notice
+that it is marked as `dirty` and shows the git status.
 
 == Usage
 
