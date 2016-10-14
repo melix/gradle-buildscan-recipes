@@ -24,7 +24,7 @@ buildscript {
 
   dependencies {
      classpath "com.gradle:build-scan-plugin:{buildscan-version}"
-     classpath 'me.champeau.gradle:buildscan-recipes-plugin:{plugin-version}'
+     classpath 'gradle.plugin.me.champeau.gradle:buildscan-recipes-plugin:{plugin-version}'
   }
 }
 
