@@ -1,8 +1,16 @@
 def env = System.getenv()
 
-if (env.CI && env.BUILD_ID && env.BUILD_SERVER_URL && env.BUILD_TYPE_ID && env.BUILD_URL) {
+if (env.TEAMCITY_VERSION) {
+    def version = env.TEAMCITY_VERSION
     buildScan.tag 'CI'
-    buildScan.link "TeamCity Build", env.BUILD_URL
-    buildScan.value "Build ID", env.BUILD_ID
+    def guest = params.guest?'&guest=1':''
+    def buildId = System.getProperty('teamcity.agent.dotnet.build_id', null)
+    if (env.BUILD_URL) {
+        buildScan.link "TeamCity $version build", env.BUILD_URL
+    } else if (params.baseUrl && buildId) {
+        buildScan.link "TeamCity $version build", "${params.baseUrl}/viewLog.html?buildId=$buildId$guest"
+    }
+    buildScan.value "Teamcity $version build name", env.TEAMCITY_BUILDCONF_NAME
+
 }
 
