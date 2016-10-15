@@ -73,6 +73,10 @@ buildScan {
 }
 ----
 
+The `teamcity` recipe accepts 2 optional parameters:
+* `baseUrl` needs to be set to the CI server base URL
+* `guest`, if set, will generate a URL with anonymous login
+
 == Adding recipes
 
 Recipes are written in Groovy and can be found in the https://github.com/melix/gradle-buildscan-recipes/tree/master/src/recipes[recipes] directory. Note that the rules are _statically compiled_ and expose 2 variables:
