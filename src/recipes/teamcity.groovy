@@ -4,7 +4,11 @@ if (env.TEAMCITY_VERSION) {
     def version = env.TEAMCITY_VERSION
     buildScan.tag 'CI'
     def guest = params.guest?'&guest=1':''
+    def project = gradle.rootProject
     def buildId = System.getProperty('teamcity.agent.dotnet.build_id', null)
+    if (!buildId && project.hasProperty('teamcity')) {
+        buildId = ((Map)project.property('teamcity'))['build.id']
+    }
     if (env.BUILD_URL) {
         buildScan.link "TeamCity $version build", env.BUILD_URL
     } else if (params.baseUrl && buildId) {
