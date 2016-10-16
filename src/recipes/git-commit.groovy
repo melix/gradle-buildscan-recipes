@@ -1,6 +1,6 @@
 def commitId
 try {
-    commitId = 'git rev-parse --verify HEAD'.execute().text.trim()
+    commitId = ['git', 'rev-parse' ,'--verify' , 'HEAD'].execute().text.trim()
 } catch (ignore) {
     // ignore
 }
