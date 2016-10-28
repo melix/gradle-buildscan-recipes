@@ -43,27 +43,29 @@ public class RecipeCompiler extends CompilationCustomizer {
 
     @Override
     public void call(final SourceUnit sourceUnit, final GeneratorContext generatorContext, final ClassNode classNode) throws CompilationFailedException {
-        classNode.setName(recipeClassName(classNode.getName()));
-        classNode.addInterface(ClassHelper.make(Recipe.class));
-        classNode.setSuperClass(ClassHelper.OBJECT_TYPE);
-        MethodNode run = classNode.getMethods("run").get(0);
-        classNode.getMethods().remove(run);
-        ClassNode mapType = MAP_TYPE.getPlainNodeReference();
-        mapType.setGenericsTypes(new GenericsType[] {
-            new GenericsType(ClassHelper.STRING_TYPE),
-            new GenericsType(ClassHelper.STRING_TYPE),
-        });
-        MethodNode apply = new MethodNode("apply",
-                Modifier.PUBLIC,
-                ClassHelper.VOID_TYPE,
-                new Parameter[]{
-                        new Parameter(GRADLE_TYPE, "gradle"),
-                        new Parameter(BUILDSCAN_TYPE, "buildScan"),
-                        new Parameter(mapType, "params"),
-                },
-                ClassNode.EMPTY_ARRAY,
-                run.getCode());
-        classNode.addMethod(apply);
+        if (classNode.isScript()) {
+            classNode.setName(recipeClassName(classNode.getName()));
+            classNode.addInterface(ClassHelper.make(Recipe.class));
+            classNode.setSuperClass(ClassHelper.OBJECT_TYPE);
+            MethodNode run = classNode.getMethods("run").get(0);
+            classNode.getMethods().remove(run);
+            ClassNode mapType = MAP_TYPE.getPlainNodeReference();
+            mapType.setGenericsTypes(new GenericsType[]{
+                    new GenericsType(ClassHelper.STRING_TYPE),
+                    new GenericsType(ClassHelper.STRING_TYPE),
+            });
+            MethodNode apply = new MethodNode("apply",
+                    Modifier.PUBLIC,
+                    ClassHelper.VOID_TYPE,
+                    new Parameter[]{
+                            new Parameter(GRADLE_TYPE, "gradle"),
+                            new Parameter(BUILDSCAN_TYPE, "buildScan"),
+                            new Parameter(mapType, "params"),
+                    },
+                    ClassNode.EMPTY_ARRAY,
+                    run.getCode());
+            classNode.addMethod(apply);
+        }
     }
 
     public static String recipeClassName(String recipe) {
