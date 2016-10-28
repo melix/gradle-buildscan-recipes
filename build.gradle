@@ -11,14 +11,14 @@ buildscript {
 
 plugins {
    id 'com.gradle.build-scan' version '1.2'
-   id 'me.champeau.buildscan-recipes' version '0.1.1'
+   id 'me.champeau.buildscan-recipes' version '0.1.2'
 }
 
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
 
-    recipes 'git-status', 'travis-ci', 'disk-usage'
+    recipes 'git-status', 'travis-ci', 'disk-usage', 'gc-stats'
     recipe 'git-commit', baseUrl: 'https://github.com/melix/gradle-buildscan-recipes/tree'
 }
 
