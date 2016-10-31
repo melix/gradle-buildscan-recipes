@@ -68,6 +68,8 @@ The following recipes are available:
 
 === Recipe specific parameters
 
+==== `git-commit`
+
 The `git-commit` recipe accepts an optional `baseUrl` parameter. If specified, a link to the commit will also be created. For example:
 
 [source,groovy]
@@ -77,9 +79,14 @@ buildScan {
 }
 ----
 
+==== `teamcity`
+
 The `teamcity` recipe accepts 2 optional parameters:
+
 * `baseUrl` needs to be set to the CI server base URL
 * `guest`, if set, will generate a URL with anonymous login
+
+==== `messages`
 
 The `messages` recipe allows adding values, tags and links by convention. Any project property which starts with `buildScanValue` will be converted to a value. A property
  starting with `buildScanTag` will be converted to a tag, and `buildScanLink` into a link. For example:
