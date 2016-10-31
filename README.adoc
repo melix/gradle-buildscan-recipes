@@ -64,6 +64,7 @@ The following recipes are available:
 * `travis-ci`  : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
 * `disk-usage` : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
 * `gc-stats`   : Shows statistics about garbage collection happening during your build.
+* `messages`   : Allows adding ad-hoc values, tags and links from project properties (see below)
 
 === Recipe specific parameters
 
@@ -79,6 +80,13 @@ buildScan {
 The `teamcity` recipe accepts 2 optional parameters:
 * `baseUrl` needs to be set to the CI server base URL
 * `guest`, if set, will generate a URL with anonymous login
+
+The `messages` recipe allows adding values, tags and links by convention. Any project property which starts with `buildScanValue` will be converted to a value. A property
+ starting with `buildScanTag` will be converted to a tag, and `buildScanLink` into a link. For example:
+* `gradle -PbuildScanValueMessage="Hello, World!"` will add a build scan value `Message` with value `Hello, World!`
+* `gradle -PbuildScanTagHELLO will tag the build scan with `HELLO`
+* `gradle -PbuildScanLinkGradle="https://www.gradle.org"` will add a link named `Gradle` pointing to `https://www.gradle.org`
+
 
 == Adding recipes
 
