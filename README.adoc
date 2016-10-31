@@ -83,6 +83,7 @@ The `teamcity` recipe accepts 2 optional parameters:
 
 The `messages` recipe allows adding values, tags and links by convention. Any project property which starts with `buildScanValue` will be converted to a value. A property
  starting with `buildScanTag` will be converted to a tag, and `buildScanLink` into a link. For example:
+
 * `gradle -PbuildScanValueMessage="Hello, World!"` will add a build scan value `Message` with value `Hello, World!`
 * `gradle -PbuildScanTagHELLO will tag the build scan with `HELLO`
 * `gradle -PbuildScanLinkGradle="https://www.gradle.org"` will add a link named `Gradle` pointing to `https://www.gradle.org`
