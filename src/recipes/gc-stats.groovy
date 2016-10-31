@@ -13,8 +13,8 @@ def gcStart = gcValues.gcTimes
 buildScan.buildFinished {
     def gcResult = GcValues.getGcDelta(gcStart, gcValues.gcTimes)
     [GcValues.PS_SCAVENGE, GcValues.PS_MARK_SWEEP, GcValues.UNKNOWN].each { event ->
-        buildScan.value("${event} Count:", "${gcResult[event].count}")
-        buildScan.value("${event} Time (s):", "${gcResult[event].time / 1000d}")
+        buildScan.value("GC - ${event} Count:", "${gcResult[event].count}")
+        buildScan.value("GC - ${event} Time (s):", "${gcResult[event].time / 1000d}")
     }
 }
 
