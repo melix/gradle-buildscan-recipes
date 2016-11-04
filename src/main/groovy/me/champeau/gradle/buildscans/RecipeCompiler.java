@@ -16,6 +16,7 @@
 package me.champeau.gradle.buildscans;
 
 import com.gradle.scan.plugin.BuildScanExtension;
+import groovy.lang.GroovyClassLoader;
 import org.codehaus.groovy.ast.ClassHelper;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.GenericsType;
@@ -24,14 +25,28 @@ import org.codehaus.groovy.ast.Parameter;
 import org.codehaus.groovy.classgen.GeneratorContext;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilePhase;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.control.customizers.CompilationCustomizer;
+import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.gradle.api.invocation.Gradle;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class RecipeCompiler extends CompilationCustomizer {
+    private static final byte VERSION = 1;
 
     private static final ClassNode BUILDSCAN_TYPE = ClassHelper.make(BuildScanExtension.class);
     private static final ClassNode GRADLE_TYPE = ClassHelper.make(Gradle.class);
@@ -70,5 +85,50 @@ public class RecipeCompiler extends CompilationCustomizer {
 
     public static String recipeClassName(String recipe) {
         return "me.champeau.gradle.buildscans.GeneratedRecipe_" + recipe.replaceAll("[^a-zA-Z0-9]", "_");
+    }
+
+    public static Class<? extends Recipe> compileOrGetFromCache(Gradle gradle, String recipeName, URL url, boolean cache) throws NoSuchAlgorithmException,
+            URISyntaxException, IOException, ClassNotFoundException {
+        File recipeDir = recipeDir(gradle, url);
+        if (!cache || recipeDir.mkdir()) {
+            long sd = System.nanoTime();
+            try {
+                return compileToDir(recipeName, url, recipeDir, cache);
+            } finally {
+                gradle.getRootProject().getLogger().debug("Compilation took " + (TimeUnit.MILLISECONDS.convert(System.nanoTime()-sd, TimeUnit.NANOSECONDS)) + "ms");
+            }
+        }
+        return loadFromDir(recipeName, recipeDir);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<? extends Recipe> loadFromDir(final String recipeName, final File recipeDir) throws MalformedURLException, ClassNotFoundException {
+        URLClassLoader ucl = new URLClassLoader(new URL[] {recipeDir.toURI().toURL()}, RecipeCompiler.class.getClassLoader());
+        return (Class<? extends Recipe>) ucl.loadClass(recipeClassName(recipeName));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<? extends Recipe> compileToDir(final String recipeName, final URL url, final File recipeDir, final boolean cache) throws IOException {
+        System.out.println("Compiling recipe " + recipeName +"...");
+        CompilerConfiguration config = new CompilerConfiguration();
+        if (cache) {
+            config.setTargetDirectory(recipeDir);
+        }
+        config.addCompilationCustomizers(new RecipeCompiler());
+        GroovyClassLoader gcl = new GroovyClassLoader(RecipeCompiler.class.getClassLoader(), config);
+        return (Class<? extends Recipe>) gcl.parseClass(ResourceGroovyMethods.getText(url, "UTF-8"), recipeName + ".groovy");
+    }
+
+    private static File recipeDir(final Gradle gradle, final URL url) throws NoSuchAlgorithmException, UnsupportedEncodingException, URISyntaxException {
+        MessageDigest digest = MessageDigest.getInstance("SHA1");
+        digest.update(url.toURI().toString().getBytes("utf-8"));
+        digest.update(VERSION);
+        File gradleUserHomeDir = gradle.getGradleUserHomeDir();
+        File recipesHomeDir = new File(gradleUserHomeDir, "buildScanRecipes");
+        if (!recipesHomeDir.exists()) {
+            recipesHomeDir.mkdirs();
+        }
+        String hex = new BigInteger(1, digest.digest()).toString(16);
+        return new File(recipesHomeDir, hex);
     }
 }
