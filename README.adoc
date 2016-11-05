@@ -1,6 +1,6 @@
 = Build Scans Recipes Gradle Plugin
 :buildscan-version: 1.2
-:plugin-version: 0.1.3
+:plugin-version: 0.1.4
 
 image:http://img.shields.io/travis/melix/gradle-buildscan-recipes/master.svg["Build Status (travis)", link="https://travis-ci.org/melix/gradle-buildscan-recipes"]
 image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
@@ -65,6 +65,8 @@ The following recipes are available:
 * `disk-usage` : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
 * `gc-stats`   : Shows statistics about garbage collection happening during your build.
 * `messages`   : Allows adding ad-hoc values, tags and links from project properties (see below)
+* `gist`       : Allows to use a recipe found in a GitHub Gist
+* `remote`     : Allows to use a recipe found in any remote URL
 
 === Recipe specific parameters
 
@@ -95,6 +97,70 @@ The `messages` recipe allows adding values, tags and links by convention. Any pr
 * `gradle -PbuildScanTagHELLO will tag the build scan with `HELLO`
 * `gradle -PbuildScanLinkGradle="https://www.gradle.org"` will add a link named `Gradle` pointing to `https://www.gradle.org`
 
+=== External recipes
+
+In addition to the bundled recipes, it is possible to use recipes on external resources. The first recipe allows to
+reference another recipe found in a GitHub Gist:
+
+==== `gist`
+
+```
+buildScan {
+   recipe 'gist', user: 'melix',
+                  id: '5944cb701d6c9650ecaccccd4642ea5f',
+                  rev: '4b40b45559929ee2baaa7599e29dd78e51c3843a',
+                  recipe: 'my-recipe',
+                  // external recipe parameters
+                  name: 'Bob'
+}
+```
+
+The `gist` recipe accepts the following parameters:
+
+- `user`: username of the gist owner
+- `id` id of the gist
+- `recipe` name of the file containing the gist
+- `rev` revision of the gist. If absent, the compiled recipe will not be cached.
+
+Any additional parameter will be passed to the remote recipe (here, the `name` parameter).
+
+If the `rev` parameter is present, we're pointing at
+a specific version of the Gist, so the recipe will fetch it only once, compile it and cache it in the
+`$USER_HOME/.gradle/buildScanRecipes` directory. If it is absent, it is going to point to `HEAD`, meaning that
+each time the recipe is called, it's going to fetch it remotely, compile it, but it will *not* cache the result.
+
+==== `remote`
+
+As an alternative to the `gist` recipe, you can simply reference any remote URL, using the `remote` recipe:
+
+```
+   recipe 'remote',
+          url: 'https://gist.githubusercontent.com/melix/5944cb701d6c9650ecaccccd4642ea5f/raw//my-recipe.groovy',
+          cache: 'true',
+          // external recipe parameters below:
+          name: 'Bob'
+```
+
+This recipe will fetch the remote recipe, compile it, and cache it if and only if the `cache` flag is set to `true`. The
+recipe accepts 2 parameters:
+
+* `url` : the URL of the script, pointing at a Groovy recipe script
+* `cache` : if `true`, the URL will only be fetched the first time, then it will compile the script and subsequent
+executions will reuse the result, avoiding a network call and compile phase.
+
+Any additional parameter will be passed to the remote recipe (here, the `name` parameter).
+
+It's worth noting that this recipe can be used to compile local recipes too, or to test recipes before you publish
+them on a Gist or anywhere else:
+
+```
+buildScan {
+   recipe 'remote',
+          url: file('recipes/my-awesome-recipe.groovy').toURL(),
+          // local recipe parameters below
+          name: 'Bob'
+}
+```
 
 == Adding recipes
 
