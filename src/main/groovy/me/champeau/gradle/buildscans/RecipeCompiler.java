@@ -90,6 +90,10 @@ public class RecipeCompiler extends CompilationCustomizer {
     public static Class<? extends Recipe> compileOrGetFromCache(Gradle gradle, String recipeName, URL url, boolean cache) throws NoSuchAlgorithmException,
             URISyntaxException, IOException, ClassNotFoundException {
         File recipeDir = recipeDir(gradle, url);
+        if (!cache && recipeDir.exists()) {
+            // cleanup
+            ResourceGroovyMethods.deleteDir(recipeDir);
+        }
         if (!cache || recipeDir.mkdir()) {
             long sd = System.nanoTime();
             try {
