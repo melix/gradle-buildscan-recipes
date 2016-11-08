@@ -17,7 +17,7 @@ import org.gradle.api.Project
  *
  */
 
-if (gradle.rootProject.findProperty('noGist') != null) {
+if (gradle.rootProject.hasProperty('noGist')) {
     return
 }
 
