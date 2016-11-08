@@ -58,15 +58,16 @@ plugins {
 The plugin provides a number of _recipes_ that can be used to automatically add tags and custom values to Build Scans.
 The following recipes are available:
 
-* `git-commit` : Tries to determine the Git commit ID for the build
-* `git-status` : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
-* `teamcity`   : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
-* `travis-ci`  : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
-* `disk-usage` : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
-* `gc-stats`   : Shows statistics about garbage collection happening during your build.
-* `messages`   : Allows adding ad-hoc values, tags and links from project properties (see below)
-* `gist`       : Allows to use a recipe found in a GitHub Gist
-* `remote`     : Allows to use a recipe found in any remote URL
+* `git-commit`       : Tries to determine the Git commit ID for the build
+* `git-status`       : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
+* `git-diff-to-gist` : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
+* `teamcity`         : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
+* `travis-ci`        : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
+* `disk-usage`       : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
+* `gc-stats`         : Shows statistics about garbage collection happening during your build.
+* `messages`         : Allows adding ad-hoc values, tags and links from project properties (see below)
+* `gist`             : Allows to use a recipe found in a GitHub Gist
+* `remote`           : Allows to use a recipe found in any remote URL
 
 === Recipe specific parameters
 
@@ -80,6 +81,42 @@ buildScan {
     recipe 'git-commit', baseUrl: 'https://github.com/melix/gradle-buildscan-recipes/tree'
 }
 ----
+
+==== `git-diff-to-gist`
+
+This recipe will take the result of the `git diff` command and paste it as a Gist. By default, this will create a private
+Gist, but still be aware than anyone with the link can view the diff. For this recipe to work, you need a GitHub account
+ and an https://github.com/settings/tokens[API Token]. We *strongly* recommend that you create a token specifically for
+  this recipe, limited to the `gist` access rights. The recipe takes 3 optional parameters:
+
+* `user` is your GitHub username
+* `token` is your API token. If not specified explicitly, will look for a project property named "gistToken"
+* `public` (by default `"false"`) tells if the Gist should be public (`"true"`) or private (`"false"`).
+
+All those arguments are optional. For security reasons, we recommend not setting the `user` and `token` directly in your
+build file. For this reason, the recipe will by default search for a project property `gistUsername` for the username
+and `gistToken` for the token. You can set those properties in your home directory `gradle.properties` file:
+
+.~/gradle.properties
+```
+gistUsername=buildscansrulez
+gistToken=github-generated-api-token
+```
+
+If you do this, the simples configuration looks like this:
+
+```
+buildScan {
+   ...
+   recipes 'git-diff-to-gist'
+}
+```
+
+In addition, if you don't want to systematically publish the diff, you can run with `-PnoGist`:
+
+```
+./gradlew -PnoGist someTask
+```
 
 ==== `teamcity`
 
