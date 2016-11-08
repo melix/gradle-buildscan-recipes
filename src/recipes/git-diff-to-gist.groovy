@@ -17,7 +17,7 @@ import org.gradle.api.Project
  *
  */
 
-if (gradle.rootProject.findProperty('noGist') != null) {
+if (gradle.rootProject.hasProperty('noGist')) {
     return
 }
 
@@ -48,7 +48,6 @@ try {
 
 @CompileDynamic
 static void jsonRequest(Writer out, Project project, String isPublic, String diff) {
-    project.findProperty()
     def builder = new JsonBuilder()
     builder {
         description("Git diff for $project.name")
