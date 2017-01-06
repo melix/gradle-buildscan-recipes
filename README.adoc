@@ -38,7 +38,7 @@ buildScan {
    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
    licenseAgree = 'yes'
 
-   recipes 'git-commit', 'git-status', 'teamcity', 'gc-stats'
+   recipes 'git-branch', 'git-commit', 'git-status', 'teamcity', 'gc-stats'
 }
 ----
 
@@ -58,6 +58,7 @@ plugins {
 The plugin provides a number of _recipes_ that can be used to automatically add tags and custom values to Build Scans.
 The following recipes are available:
 
+* `git-branch`       : Tries to determine the Git branch name for the build
 * `git-commit`       : Tries to determine the Git commit ID for the build
 * `git-status`       : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
 * `git-diff-to-gist` : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
