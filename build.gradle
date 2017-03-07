@@ -37,7 +37,7 @@ repositories {
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.gradle:build-scan-plugin:1.2'
+    compile 'com.gradle:build-scan-plugin:1.6'
 }
 
 sourceCompatibility = 1.7
