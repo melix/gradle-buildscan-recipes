@@ -12,7 +12,7 @@ if (os.unix || os.macOsX) {
 
    List<Measurement> measurements = []
 
-   def directoriesToMeasure = ['caches': 'Artifact Cache', 'task-cache': 'Task Output Cache', 'wrapper': "Wrappers ($wrapperCount versions)"]
+   def directoriesToMeasure = ['caches': 'Caches', 'wrapper': "Wrappers ($wrapperCount versions)"]
 
    directoriesToMeasure.each { dir ->
       File dirKey = gradle.rootProject.file("$home/.gradle/$dir.key")
