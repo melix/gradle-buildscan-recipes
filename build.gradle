@@ -10,13 +10,14 @@ buildscript {
 }
 
 plugins {
-   id 'com.gradle.build-scan' version '1.6'
+   id 'com.gradle.build-scan' version '1.7.4'
    id 'me.champeau.buildscan-recipes' version '0.2.0'
 }
 
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
+    publishAlways()
 }
 
 buildScanRecipes {
@@ -39,7 +40,7 @@ repositories {
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.gradle:build-scan-plugin:1.6'
+    compile 'com.gradle:build-scan-plugin:1.7.4'
 }
 
 sourceCompatibility = 1.7
