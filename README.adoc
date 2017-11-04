@@ -60,15 +60,16 @@ plugins {
 The plugin provides a number of _recipes_ that can be used to automatically add tags and custom values to Build Scans.
 The following recipes are available:
 
-* `git-commit`       : Tries to determine the Git commit ID for the build
-* `git-status`       : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
-* `git-diff-to-gist` : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
-* `teamcity`         : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
-* `travis-ci`        : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
-* `disk-usage`       : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
-* `gc-stats`         : Shows statistics about garbage collection happening during your build.
-* `gist`             : Allows to use a recipe found in a GitHub Gist
-* `remote`           : Allows to use a recipe found in any remote URL
+* `git-commit`          : Tries to determine the Git commit ID for the build
+* `git-status`          : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
+* `git-diff-to-gist`    : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
+* `teamcity`            : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
+* `travis-ci`           : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
+* `disk-usage`          : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
+* `gc-stats`            : Shows statistics about garbage collection happening during your build.
+* `gist`                : Allows to use a recipe found in a GitHub Gist
+* `remote`              : Allows to use a recipe found in any remote URL
+* `file-leak-detection` : Attemps to identify tasks which leak file handles (experimental)
 
 === Recipe specific parameters
 
@@ -125,6 +126,55 @@ The `teamcity` recipe accepts 2 optional parameters:
 
 * `baseUrl` needs to be set to the CI server base URL
 * `guest`, if set, will generate a URL with anonymous login
+
+==== `file-leak-detection`
+
+This recipe will attempt to detect which tasks leak file handles (a leaking file handle is often referred to a file which is open
+but never closed). If a file is opened during a build, but never closed, subsequent builds may fail, dependending on your operating
+system, because of those. Typically, your build could fail removing a jar file because the previous build opened it, but never closed
+it. This is problematic in Gradle if you use the daemon, which is now on by default. So it is important to track which tasks
+do not properly close their files, so that you can either report to the plugin author (for tasks defined in a plugin) or fix your
+build.
+
+The recipe works by loading [a Java agent](http://file-leak-detector.kohsuke.org/) that will track file handles. If leaking files
+are detected, the build scan will report a `LEAKING FILE HANDLES` tag, and in custom values you will see each file that leaks a
+file, with the files and details as to where it happens (for debugging).
+
+For example, imagine the following build file:
+
+[source,groovy]
+----
+task foo1 {
+   doLast {
+      def fos = file('/tmp/foo1.txt').newOutputStream()
+   }
+}
+
+task foo2 {
+   doLast {
+      def fos = file('/tmp/foo2.txt').newOutputStream()
+      fos.close()
+   }
+}
+----
+
+The `foo1` task is opening a file, but never closes it. The `foo2` task, on the contrary, closes it properly. Here's the
+resulting [build scan](https://scans.gradle.com/s/dpvxomrln43bo/custom-values). The details file contains the stack trace to
+the file open, so you could see:
+
+```
+...snip...
+	at build_733t8o56jehucx5ms8s6ul86j$_run_closure6$_closure11.doCall(/home/cchampeau/DEV/PROJECTS/GITHUB/buildscan-recipes-plugin/test/build.gradle:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+...snip...
+
+```
+
+And therefore find out where the file is opened and never closed.
+
+This recipe is still experimental, as it could potentially detect files opened by Gradle, which are closed _after_ a build is finished.
+
+If the recipe is applied, it is still possible to avoid loading the agent and paying the overhead of detection by using `-PdisableLeakDetection`.
 
 === External recipes
 
