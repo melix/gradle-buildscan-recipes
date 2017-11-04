@@ -136,7 +136,7 @@ it. This is problematic in Gradle if you use the daemon, which is now on by defa
 do not properly close their files, so that you can either report to the plugin author (for tasks defined in a plugin) or fix your
 build.
 
-The recipe works by loading [a Java agent](http://file-leak-detector.kohsuke.org/) that will track file handles. If leaking files
+The recipe works by loading http://file-leak-detector.kohsuke.org/[a Java agent] that will track file handles. If leaking files
 are detected, the build scan will report a `LEAKING FILE HANDLES` tag, and in custom values you will see each file that leaks a
 file, with the files and details as to where it happens (for debugging).
 
@@ -159,7 +159,7 @@ task foo2 {
 ----
 
 The `foo1` task is opening a file, but never closes it. The `foo2` task, on the contrary, closes it properly. Here's the
-resulting [build scan](https://scans.gradle.com/s/dpvxomrln43bo/custom-values). The details file contains the stack trace to
+resulting https://scans.gradle.com/s/dpvxomrln43bo/custom-values[build scan]. The details file contains the stack trace to
 the file open, so you could see:
 
 ```
