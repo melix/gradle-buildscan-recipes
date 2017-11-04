@@ -5,12 +5,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
     }
 }
 
 plugins {
-   id 'com.gradle.build-scan' version '1.7.4'
+   id 'com.gradle.build-scan' version '1.10.1'
    id 'me.champeau.buildscan-recipes' version '0.2.0'
 }
 
@@ -21,7 +21,7 @@ buildScan {
 }
 
 buildScanRecipes {
-    recipes 'git-status', 'git-diff-to-gist', 'travis-ci', 'disk-usage', 'gc-stats'
+    recipes 'git-status', 'git-diff-to-gist', 'travis-ci'
     recipe 'git-commit', baseUrl: 'https://github.com/melix/gradle-buildscan-recipes/tree'
 }
 
@@ -40,7 +40,7 @@ repositories {
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.gradle:build-scan-plugin:1.7.4'
+    compile 'com.gradle:build-scan-plugin:1.10.1'
 }
 
 sourceCompatibility = 1.7
