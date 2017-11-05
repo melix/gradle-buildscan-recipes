@@ -1,6 +1,6 @@
 = Build Scans Recipes Gradle Plugin
 :buildscan-version: 1.10.1
-:plugin-version: 0.2.2
+:plugin-version: 0.2.3
 
 image:http://img.shields.io/travis/melix/gradle-buildscan-recipes/master.svg["Build Status (travis)", link="https://travis-ci.org/melix/gradle-buildscan-recipes"]
 image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
