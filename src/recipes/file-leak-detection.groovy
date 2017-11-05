@@ -35,7 +35,7 @@ Set<Record> listOpenFiles(Class listener) {
     }.findAll { Record it ->
         // filter out Gradle files which are closed after build is finished
         !it.stackTrace.stackTrace.any {
-            it.className.startsWith('org.gradle.api.internal.artifacts.ivyservice.resolveengine.store') ||
+            it.className.startsWith('org.gradle.api.internal') ||
             it.className.startsWith('org.gradle.cache.internal')
         }
     } as Set<Record>
