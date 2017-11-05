@@ -33,8 +33,11 @@ Set<Record> listOpenFiles(Class listener) {
         File file = it.class.name == 'org.kohsuke.file_leak_detector.Listener$FileRecord'?it.'file' : null
         new Record((Exception)it.'stackTrace', (String) it.'threadName', (Long) it.'time', file)
     }.findAll { Record it ->
-        // filter out Gradle dependency resolution files which are closed after build is finished
-        !it.stackTrace.stackTrace.any { it.className.startsWith('org.gradle.api.internal.artifacts.ivyservice.resolveengine.store') }
+        // filter out Gradle files which are closed after build is finished
+        !it.stackTrace.stackTrace.any {
+            it.className.startsWith('org.gradle.api.internal.artifacts.ivyservice.resolveengine.store') ||
+            it.className.startsWith('org.gradle.cache.internal')
+        }
     } as Set<Record>
 }
 
