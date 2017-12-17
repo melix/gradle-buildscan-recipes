@@ -4,7 +4,7 @@ if (!(env.CI && env.GITLAB_CI)) {
     return
 }
 
-buildScan {
+buildScan.with {
     tag 'CI'
     link 'GitLab CI Job', "${env.CI_PROJECT_URL}/-/jobs/${env.CI_JOB_ID}"
     link 'GitLab CI Pipeline', "${env.CI_PROJECT_URL}/pipelines/${env.CI_PIPELINE_ID}"
