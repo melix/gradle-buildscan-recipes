@@ -6,6 +6,7 @@ if (!(env.CI && env.GITLAB_CI)) {
 
 buildScan.with {
     tag 'CI'
+    link 'GitLab Project', env.CI_PROJECT_URL
     link 'GitLab CI Job', "${env.CI_PROJECT_URL}/-/jobs/${env.CI_JOB_ID}"
     link 'GitLab CI Pipeline', "${env.CI_PROJECT_URL}/pipelines/${env.CI_PIPELINE_ID}"
 
@@ -22,8 +23,11 @@ buildScan.with {
     value 'GitLab CI Job Name', env.CI_JOB_NAME
     value 'GitLab CI Job Stage', env.CI_JOB_STAGE
     value 'GitLab CI Pipeline Source', env.CI_PIPELINE_SOURCE
-    value 'GitLab CI Environment', env.CI_ENVIRONMENT_NAME
-    value 'GitLab CI Environment URL', env.CI_ENVIRONMENT_URL
+    if (env.CI_ENVIRONMENT_URL) {
+        link "${env.CI_ENVIRONMENT_NAME} environment", env.CI_ENVIRONMENT_URL
+        value 'GitLab CI Environment', env.CI_ENVIRONMENT_NAME
+        value 'GitLab CI Environment URL', env.CI_ENVIRONMENT_URL
+    }
     value 'GitLab CI Runner ID', env.CI_RUNNER_ID
     value 'GitLab CI Runner Desc', env.CI_RUNNER_DESCRIPTION
     value 'GitLab CI Runner Tags', env.CI_RUNNER_TAGS
