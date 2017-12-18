@@ -63,6 +63,7 @@ The following recipes are available:
 * `git-commit`          : Tries to determine the Git commit ID for the build
 * `git-status`          : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
 * `git-diff-to-gist`    : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
+* `gitlab-ci`           : Detects a build running under https://docs.gitlab.com/ce/ci/README.html[GitLab CI], tags it as `CI` and outputs information about GitLab CI environment
 * `teamcity`            : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
 * `travis-ci`           : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
 * `disk-usage`          : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
