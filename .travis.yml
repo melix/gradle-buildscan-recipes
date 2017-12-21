@@ -1,13 +1,12 @@
-jdk: 
-  - oraclejdk7
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install oracle-java7-installer
+language: groovy
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
     - $HOME/.m2
-    - $HOME/.gradle
 before_script:
   - ./gradlew --version
-script: ./gradlew --no-daemon -s -PbuildInfo.build.number=$TRAVIS_BUILD_NUMBER -PbuildInfo.buildUrl=https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_JOB_ID}
-  -PbuildInfo.buildAgent.name=$USER -PbuildInfo.principal=$USER -Dscan clean jar
+script: ./gradlew --no-daemon --scan -s -PbuildInfo.build.number=$TRAVIS_BUILD_NUMBER -PbuildInfo.buildUrl=https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_JOB_ID}
+  -PbuildInfo.buildAgent.name=$USER -PbuildInfo.principal=$USER clean jar
