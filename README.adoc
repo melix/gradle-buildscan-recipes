@@ -63,6 +63,7 @@ The following recipes are available:
 * `git-commit`          : Tries to determine the Git commit ID for the build
 * `git-status`          : Outputs the result of `git status`, and tags the build as `dirty` if there are uncommitted or changes files locally
 * `git-diff-to-gist`    : Pushes the result of `git diff` to a Gist and creates a link in the build scan to this diff
+* `grgit`               : Adds git information: commit ID, status and branch name using https://github.com/ajoberstar/grgit[grgit/JGit], for use when `git` CLI is not available
 * `teamcity`            : Detects a build running under https://www.jetbrains.com/teamcity/[TeamCity], tags it as `CI`, and adds a link to the build
 * `travis-ci`           : Detects a build running under https://travis-ci.org[Travis CI], tags it as `CI` and outputs information about the Travis environment
 * `disk-usage`          : Shows information about Gradle disk usage. It will scan your `$HOME/.gradle` directory as well as your project directory. Note that depending on your disk type, OS, disk usage and file system, this can turn to be very slow and add a non negligeable time at build start. You should therefore use this recipe with care. This recipe only works on Linux and Mac OS.
@@ -119,6 +120,22 @@ In addition, if you don't want to systematically publish the diff, you can run w
 ```
 ./gradlew -PnoGist someTask
 ```
+
+==== `grgit`
+
+The `grgit` recipe accepts an optional `baseUrl` parameter. If specified, a link to the commit will also be created. For example:
+
+[source,groovy]
+----
+buildScanRecipes {
+    recipe 'grgit', baseUrl: 'https://github.com/melix/gradle-buildscan-recipes/tree'
+}
+----
+
+Note that in order to use `grgit` you don't need to have git CLI, but you do need a buildScript dependency on
+https://github.com/ajoberstar/grgit[grgit] or another plugin that depends on it, like
+https://github.com/ajoberstar/gradle-git[gradle-git], https://github.com/ajoberstar/reckon[reckon] or
+https://github.com/nebula-plugins/nebula-release-plugin[nebula-release].
 
 ==== `teamcity`
 
