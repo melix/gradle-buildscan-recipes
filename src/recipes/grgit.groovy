@@ -18,8 +18,10 @@ buildScan.with {
     }
 
     def branchName = git.branch.current.name
-    tag branchName
-    value 'Git Branch Name', branchName
+    if (branchName && branchName != 'HEAD') {
+        tag branchName
+        value 'Git Branch Name', branchName
+    }
 
     def status = git.status()
     if (!status.isClean()) {
