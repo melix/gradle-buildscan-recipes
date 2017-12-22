@@ -14,9 +14,11 @@ buildScan.with {
     value 'GitLab CI Project Namespace', env.CI_PROJECT_NAMESPACE
     value 'GitLab CI Project Path', env.CI_PROJECT_PATH
     value 'GitLab CI Project URL', env.CI_PROJECT_URL
+    tag env.CI_COMMIT_REF_NAME
     value 'GitLab CI Built Branch', env.CI_COMMIT_REF_NAME
     value 'GitLab CI Built Commit', env.CI_COMMIT_SHA
     if (env.CI_COMMIT_TAG) {
+        tag env.CI_COMMIT_TAG
         value 'GitLab CI Tag', env.CI_COMMIT_TAG
     }
     value 'GitLab CI Job Started Manually', env.CI_JOB_MANUAL
