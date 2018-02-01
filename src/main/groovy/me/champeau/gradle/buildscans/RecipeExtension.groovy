@@ -31,6 +31,10 @@ class RecipeExtension {
         recipes.apply(recipeName, params)
     }
 
+    void recipe(String recipeName, Map<String, String> params) {
+        recipes.apply(recipeName, params)
+    }
+
     void recipes(String... recipeList) {
         recipeList.each { String recipe ->
             recipes.apply(recipe)
